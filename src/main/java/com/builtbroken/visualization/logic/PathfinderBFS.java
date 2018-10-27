@@ -5,6 +5,7 @@ import com.builtbroken.visualization.data.Grid;
 import com.builtbroken.visualization.data.GridPoint;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -25,9 +26,29 @@ public class PathfinderBFS extends Pathfinder
         doPath(center, grid, images, queue);
     }
 
+    @Override
+    public void pathWithNoTarget(Grid grid, Collection<GridPoint> startNodes, ArrayList<Grid> images, int startX, int startY)
+    {
+        final Queue<GridPoint> queue = new LinkedList();
+
+        final GridPoint center = GridPoint.get(startX, startY);
+
+        startNodes.forEach(n -> {
+            queue.offer(n);
+            grid.setData(n.x, n.y, Pathfinders.READY_NODE_ID);
+        });
+
+        doPath(center, grid, images, queue);
+    }
+
     protected void doPath(GridPoint center, Grid grid, ArrayList<Grid> images, Queue<GridPoint> queue)
     {
         final ArrayList<GridPoint> tempList = new ArrayList(4);
+
+        if(images != null)
+        {
+            images.add(grid.copyLayer());
+        }
 
         while (!queue.isEmpty())
         {

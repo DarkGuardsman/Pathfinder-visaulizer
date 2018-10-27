@@ -2,6 +2,7 @@ package com.builtbroken.visualization.ui;
 
 import com.builtbroken.visualization.component.RenderPanel;
 import com.builtbroken.visualization.data.Grid;
+import com.builtbroken.visualization.data.PathFunction;
 import com.builtbroken.visualization.logic.Pathfinders;
 
 import javax.swing.*;
@@ -65,11 +66,11 @@ public class DisplayFrame extends JFrame
         //--------------------------------------------------------
 
         Button button = new Button("Breadth First");
-        button.addActionListener(e -> generateBreadthFirst());
+        button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doBreadthPathfinder(grid, images, x, y)));
         panel.add(button);
 
         button = new Button("Depth First");
-        button.addActionListener(e -> generateDepthFirst());
+        button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doDepthPathfinder(grid, images, x, y)));
         panel.add(button);
 
         //--------------------------------------------------------
@@ -81,12 +82,44 @@ public class DisplayFrame extends JFrame
 
         //--------------------------------------------------------
 
-        button = new Button("Breadth First");
-        button.addActionListener(e -> generateBreadthFirst());
+        button = new Button("BFS Box");
+        button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doBreadthPathfinderBox(grid, images, x, y)));
         panel.add(button);
 
-        button = new Button("----");
-        //button.addActionListener(e -> generateDepthFirst());
+        button = new Button("BFS Quick Start");
+        button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doBreadthPathfinderQuickStart(grid, images, x, y)));
+        panel.add(button);
+
+        //--------------------------------------------------------
+
+        //Spacer
+        panel.add(new JPanel());
+        panel.add(new JPanel());
+
+        //--------------------------------------------------------
+
+        button = new Button("BFS Sorted QS");
+        button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doBreadthPathfinderQuickStartSorted(grid, images, x, y)));
+        panel.add(button);
+
+        button = new Button("BFS Sorted Box");
+        button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doBreadthPathfinderBoxSorted(grid, images, x, y)));
+        panel.add(button);
+
+        //--------------------------------------------------------
+
+        //Spacer
+        panel.add(new JPanel());
+        panel.add(new JPanel());
+
+        //--------------------------------------------------------
+
+        button = new Button("Shell");
+        button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doShellPathfinder(grid, images, x, y)));
+        panel.add(button);
+
+        button = new Button("---");
+        ///button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doBreadthPathfinderBoxSorted(grid, images, x, y)));
         panel.add(button);
 
 
@@ -179,7 +212,7 @@ public class DisplayFrame extends JFrame
         }
     }
 
-    protected void generateBreadthFirst()
+    protected void generateData(PathFunction function)
     {
         System.out.println("Generating data");
 
@@ -192,29 +225,7 @@ public class DisplayFrame extends JFrame
 
         //Generate data
         Grid grid = new Grid(size);
-        Pathfinders.doBreadthPathfinder(grid,  renderLayers,51, 51);
-
-        //Update render panel
-        updateRenderPanel();
-
-        System.out.println("Done generating...");
-        renderPanel.repaint();
-    }
-
-    protected void generateDepthFirst()
-    {
-        System.out.println("Generating data");
-
-        //Clear old data
-        renderLayers.clear();
-        play(true);
-        layerIndex = 0;
-
-        final int size = 101;
-
-        //Generate data
-        Grid grid = new Grid(size);
-        Pathfinders.doDepthPathfinder(grid,  renderLayers,51, 51);
+        function.path(grid, renderLayers, 51, 51);
 
         //Update render panel
         updateRenderPanel();

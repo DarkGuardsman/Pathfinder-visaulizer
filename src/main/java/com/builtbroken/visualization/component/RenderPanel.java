@@ -1,6 +1,7 @@
 package com.builtbroken.visualization.component;
 
 import com.builtbroken.visualization.data.Grid;
+import com.builtbroken.visualization.logic.Pathfinders;
 
 import javax.swing.*;
 import java.awt.*;
@@ -71,32 +72,35 @@ public class RenderPanel extends JPanel
 
                     int data = currentLayer.getData(x, y);
 
-                    if (data != 0)
+                    if (data != Pathfinders.EMPTY_NODE_ID)
                     {
-                        //Already pathed
-                        if (data == 1)
+                        if (data == Pathfinders.CENTER_NODE_ID)
                         {
                             g2.setPaint(Color.RED);
                         }
-                        //Next pathed
-                        else if (data == 2)
+                        else if (data == Pathfinders.READY_NODE_ID)
                         {
                             g2.setPaint(Color.BLUE);
                         }
-                        //current pathed
-                        else if (data == 3)
+                        else if (data == Pathfinders.CURRENT_NODE_ID)
                         {
                             g2.setPaint(Color.YELLOW);
                         }
-                        //Center
-                        else if (data == 4)
+                        else if (data == Pathfinders.COMPLETED_NODE_ID)
                         {
                             g2.setPaint(Color.GREEN);
                         }
-                        //Center
-                        else if (data == 5)
+                        else if (data == Pathfinders.ADDED_NODE_ID)
                         {
                             g2.setPaint(Color.PINK);
+                        }
+                        else if (data == Pathfinders.WAITING_NODE_ID)
+                        {
+                            g2.setPaint(Color.cyan);
+                        }
+                        else
+                        {
+                            g2.setPaint(Color.BLACK);
                         }
                         g2.fillRect(drawX, drawY, sizeX, sizeY);
                     }
