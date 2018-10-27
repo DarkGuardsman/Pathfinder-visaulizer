@@ -21,6 +21,7 @@ public class Pathfinders
     public static final int COMPLETED_NODE_ID = 4;
     public static final int ADDED_NODE_ID = 5;
     public static final int WAITING_NODE_ID = 6;
+    public static final int WALL_NODE_ID = 7;
 
     public static final Pathfinder breadthFirst = new PathfinderBFS();
     public static final Pathfinder depthFirst = new PathfinderDFS();

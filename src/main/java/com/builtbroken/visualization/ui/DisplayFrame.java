@@ -1,6 +1,7 @@
 package com.builtbroken.visualization.ui;
 
 import com.builtbroken.visualization.component.RenderPanel;
+import com.builtbroken.visualization.data.EnumDirections;
 import com.builtbroken.visualization.data.Grid;
 import com.builtbroken.visualization.data.PathFunction;
 import com.builtbroken.visualization.logic.Pathfinders;
@@ -22,7 +23,7 @@ public class DisplayFrame extends JFrame
 
     Button playButton;
 
-
+    JCheckBox enableRandomWallCheckBox;
     JLabel renderIndexLabel;
     JTextField playSpeedField;
 
@@ -121,6 +122,18 @@ public class DisplayFrame extends JFrame
         button = new Button("Shell Circle");
         button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doCircleShellPathfinder(grid, images, x, y)));
         panel.add(button);
+
+        //--------------------------------------------------------
+
+        //Spacer
+        panel.add(new JPanel());
+        panel.add(new JPanel());
+
+        //--------------------------------------------------------
+
+
+        panel.add(new JLabel("Enable Random Walls: "));
+        panel.add(enableRandomWallCheckBox = new JCheckBox("", true));
 
 
         //--------------------------------------------------------
@@ -225,7 +238,36 @@ public class DisplayFrame extends JFrame
 
         //Generate data
         Grid grid = new Grid(size);
-        function.path(grid, renderLayers, 51, 51);
+
+        final int centerX = 51;
+        final int centerY = 51;
+
+        if(enableRandomWallCheckBox.isSelected())
+        {
+
+            for (int i = 0; i < 100; i++)
+            {
+                int x = centerX + (int) Math.floor((Math.random() * size)) - (int) Math.floor((Math.random() * size));
+                int y = centerY + (int) Math.floor((Math.random() * size)) - (int) Math.floor((Math.random() * size));
+
+                if (grid.isValid(x, y))
+                {
+                    grid.setData(x, y, Pathfinders.WALL_NODE_ID);
+
+                    for (EnumDirections directions : EnumDirections.values())
+                    {
+                        int xx = x + directions.xDelta;
+                        int yy = y + directions.yDelta;
+                        if (grid.isValid(xx, yy))
+                        {
+                            grid.setData(xx, yy, Pathfinders.WALL_NODE_ID);
+                        }
+                    }
+                }
+            }
+        }
+
+        function.path(grid, renderLayers, centerX, centerY);
 
         //Update render panel
         updateRenderPanel();
