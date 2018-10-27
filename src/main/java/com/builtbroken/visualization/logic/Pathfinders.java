@@ -25,7 +25,28 @@ public class Pathfinders
     public static final Pathfinder breadthFirst = new PathfinderBFS();
     public static final Pathfinder depthFirst = new PathfinderDFS();
     public static final Pathfinder breadthFirstSorted = new PathfinderSortedBFS();
-    public static final Pathfinder shell = new PathfinderShell();
+    public static final Pathfinder boxShell = new PathfinderShell((xx, yy, center, range)->
+    {
+        int x = xx - center.x;
+        int y = yy - center.y;
+        if (x > range || x < -range)
+        {
+            return false;
+        }
+        if (y > range || y < -range)
+        {
+            return false;
+        }
+        return true;
+    });
+
+    public static final Pathfinder circleShell = new PathfinderShell((xx, yy, center, range)->
+    {
+        int x = xx - center.x;
+        int y = yy - center.y;
+        double distance = x * x + y * y;
+        return Math.floor(distance) < range * range;
+    });
 
     public static void doBreadthPathfinder(Grid grid, ArrayList<Grid> images, int startX, int startY)
     {
@@ -37,9 +58,14 @@ public class Pathfinders
         depthFirst.pathWithNoTarget(grid, images, startX, startY);
     }
 
-    public static void doShellPathfinder(Grid grid, ArrayList<Grid> images, int startX, int startY)
+    public static void doBoxShellPathfinder(Grid grid, ArrayList<Grid> images, int startX, int startY)
     {
-        shell.pathWithNoTarget(grid, images, startX, startY);
+        boxShell.pathWithNoTarget(grid, images, startX, startY);
+    }
+
+    public static void doCircleShellPathfinder(Grid grid, ArrayList<Grid> images, int startX, int startY)
+    {
+        circleShell.pathWithNoTarget(grid, images, startX, startY);
     }
 
     public static void doBreadthPathfinderBox(Grid grid, ArrayList<Grid> images, int startX, int startY)

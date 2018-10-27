@@ -1,5 +1,6 @@
 package com.builtbroken.visualization.logic;
 
+import com.builtbroken.visualization.data.DistanceFunction;
 import com.builtbroken.visualization.data.EnumDirections;
 import com.builtbroken.visualization.data.Grid;
 import com.builtbroken.visualization.data.GridPoint;
@@ -15,6 +16,13 @@ import java.util.Queue;
  */
 public class PathfinderShell extends Pathfinder
 {
+    protected DistanceFunction distanceFunction;
+
+    public PathfinderShell(DistanceFunction distanceFunction)
+    {
+        this.distanceFunction = distanceFunction;
+    }
+
     @Override
     public void pathWithNoTarget(Grid grid, ArrayList<Grid> images, int startX, int startY)
     {
@@ -141,16 +149,6 @@ public class PathfinderShell extends Pathfinder
 
     protected boolean isInRange(int xx, int yy, GridPoint center, int range)
     {
-        int x = xx - center.x;
-        int y = yy - center.y;
-        if (x > range || x < -range)
-        {
-            return false;
-        }
-        if (y > range || y < -range)
-        {
-            return false;
-        }
-        return true;
+        return distanceFunction.isInRange(xx, yy, center, range);
     }
 }

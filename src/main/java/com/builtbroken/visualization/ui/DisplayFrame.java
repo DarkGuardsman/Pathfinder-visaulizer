@@ -114,12 +114,12 @@ public class DisplayFrame extends JFrame
 
         //--------------------------------------------------------
 
-        button = new Button("Shell");
-        button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doShellPathfinder(grid, images, x, y)));
+        button = new Button("Shell box");
+        button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doBoxShellPathfinder(grid, images, x, y)));
         panel.add(button);
 
-        button = new Button("---");
-        ///button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doBreadthPathfinderBoxSorted(grid, images, x, y)));
+        button = new Button("Shell Circle");
+        button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doCircleShellPathfinder(grid, images, x, y)));
         panel.add(button);
 
 
