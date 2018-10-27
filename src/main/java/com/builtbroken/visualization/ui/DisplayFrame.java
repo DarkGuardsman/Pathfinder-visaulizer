@@ -10,6 +10,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -63,10 +64,13 @@ public class DisplayFrame extends JFrame
 
         //--------------------------------------------------------
 
-        Button button = new Button("Generate Data");
-        button.addActionListener(e -> generateData());
+        Button button = new Button("Breadth First");
+        button.addActionListener(e -> generateBreadthFirst());
         panel.add(button);
-        panel.add(new JPanel());
+        
+        button = new Button("Depth First");
+        button.addActionListener(e -> generateDepthFirst());
+        panel.add(button);
 
         //--------------------------------------------------------
 
@@ -125,28 +129,28 @@ public class DisplayFrame extends JFrame
 
     protected void play(Button button)
     {
-        if (renderLayers.size() != 0)
+        if (currentlyPlaying || button == null)
         {
-            if (currentlyPlaying)
+            currentlyPlaying = false;
+            timer.stop();
+            if (button != null)
             {
-                currentlyPlaying = false;
-                timer.stop();
                 button.setLabel("Play");
             }
-            else
-            {
-                //Set play speed
-                timer.setDelay(Integer.parseInt(playSpeedField.getText().trim()));
+        }
+        else
+        {
+            //Set play speed
+            timer.setDelay(Integer.parseInt(playSpeedField.getText().trim()));
 
-                //Note we are playing
-                currentlyPlaying = true;
+            //Note we are playing
+            currentlyPlaying = true;
 
-                //Start timer
-                timer.start();
+            //Start timer
+            timer.start();
 
-                //Change text to note the button can stop play
-                button.setLabel("Stop");
-            }
+            //Change text to note the button can stop play
+            button.setLabel("Stop");
         }
     }
 
@@ -160,19 +164,20 @@ public class DisplayFrame extends JFrame
         }
     }
 
-    protected void generateData()
+    protected void generateBreadthFirst()
     {
         System.out.println("Generating data");
 
         //Clear old data
         renderLayers.clear();
+        play(null);
         layerIndex = 0;
 
         final int size = 101;
 
         //Generate data
         Grid grid = new Grid(size);
-        doNormalPathfinder(grid, 51, 51);
+        doBreadthPathfinder(grid, 51, 51);
 
         //Update render panel
         updateRenderPanel();
@@ -181,7 +186,94 @@ public class DisplayFrame extends JFrame
         renderPanel.repaint();
     }
 
-    protected void doNormalPathfinder(Grid grid, int startX, int startY)
+    protected void generateDepthFirst()
+    {
+        System.out.println("Generating data");
+
+        //Clear old data
+        renderLayers.clear();
+        play(null);
+        layerIndex = 0;
+
+        final int size = 101;
+
+        //Generate data
+        Grid grid = new Grid(size);
+        doDepthPathfinder(grid, 51, 51);
+
+        //Update render panel
+        updateRenderPanel();
+
+        System.out.println("Done generating...");
+        renderPanel.repaint();
+    }
+
+    protected void doDepthPathfinder(Grid grid, int startX, int startY)
+    {
+        final Stack<GridPoint> queue = new Stack();
+
+        final GridPoint center = GridPoint.get(startX, startY);
+        queue.add(center);
+
+        final ArrayList<GridPoint> tempList = new ArrayList(4);
+
+        while (!queue.isEmpty())
+        {
+            //Get next
+            final GridPoint node = queue.pop();
+
+            //Mark as current node
+            grid.setData(node.x, node.y, 3);
+
+            //Path to next tiles
+            for (EnumDirections dir : EnumDirections.values())
+            {
+                final int x = node.x + dir.xDelta;
+                final int y = node.y + dir.yDelta;
+
+                //Ensure is inside view
+                if (grid.isValid(x, y))
+                {
+                    final GridPoint nextPos = GridPoint.get(x, y);
+
+                    //If have not pathed, add to path list
+                    if (grid.getData(x, y) == 0)
+                    {
+                        //Mark as next node
+                        grid.setData(x, y, 5);
+
+                        //Add to queue
+                        queue.push(nextPos);
+
+                        tempList.add(nextPos);
+                    }
+                    else
+                    {
+                        nextPos.dispose();
+                    }
+                }
+            }
+
+            //Take picture
+            recordLayer(grid);
+
+            //Reset nodes to blue
+            tempList.forEach(pos -> grid.setData(pos.x, pos.y, 2));
+            tempList.clear();
+
+            //Mark as completed
+            if (node == center)
+            {
+                grid.setData(node.x, node.y, 1);
+            }
+            else
+            {
+                grid.setData(node.x, node.y, 4);
+            }
+        }
+    }
+
+    protected void doBreadthPathfinder(Grid grid, int startX, int startY)
     {
         final Queue<GridPoint> queue = new LinkedList();
 
