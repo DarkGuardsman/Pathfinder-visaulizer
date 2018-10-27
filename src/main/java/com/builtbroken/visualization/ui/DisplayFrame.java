@@ -67,7 +67,7 @@ public class DisplayFrame extends JFrame
         Button button = new Button("Breadth First");
         button.addActionListener(e -> generateBreadthFirst());
         panel.add(button);
-        
+
         button = new Button("Depth First");
         button.addActionListener(e -> generateDepthFirst());
         panel.add(button);
@@ -210,17 +210,17 @@ public class DisplayFrame extends JFrame
 
     protected void doDepthPathfinder(Grid grid, int startX, int startY)
     {
-        final Stack<GridPoint> queue = new Stack();
+        final Stack<GridPoint> stack = new Stack();
 
         final GridPoint center = GridPoint.get(startX, startY);
-        queue.add(center);
+        stack.add(center);
 
         final ArrayList<GridPoint> tempList = new ArrayList(4);
 
-        while (!queue.isEmpty())
+        while (!stack.isEmpty())
         {
             //Get next
-            final GridPoint node = queue.pop();
+            final GridPoint node = stack.pop();
 
             //Mark as current node
             grid.setData(node.x, node.y, 3);
@@ -243,7 +243,7 @@ public class DisplayFrame extends JFrame
                         grid.setData(x, y, 5);
 
                         //Add to queue
-                        queue.push(nextPos);
+                        stack.push(nextPos);
 
                         tempList.add(nextPos);
                     }

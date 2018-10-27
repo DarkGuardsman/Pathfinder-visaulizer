@@ -6,10 +6,10 @@ package com.builtbroken.visualization.data;
  */
 public enum EnumDirections
 {
-    NORTH(0, -1),
-    SOUTH(0, 1),
-    WEST(-1, 0),
-    EAST(1, 0);
+    UP(0, 1),
+    DOWN(0, -1),
+    LEFT(-1, 0),
+    RIGHT(1, 0);
 
     public final int xDelta;
     public final int yDelta;
