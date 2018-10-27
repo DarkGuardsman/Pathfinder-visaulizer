@@ -24,6 +24,11 @@ public class Grid
         return dataArray[getIndex(x, y)];
     }
 
+    public void setData(GridPoint point, int dataPoint)
+    {
+        setData(point.x, point.y, dataPoint);
+    }
+
     public void setData(int x, int y, int dataPoint)
     {
         if (!isValid(x, y))

@@ -1,16 +1,12 @@
 package com.builtbroken.visualization.ui;
 
 import com.builtbroken.visualization.component.RenderPanel;
-import com.builtbroken.visualization.data.EnumDirections;
 import com.builtbroken.visualization.data.Grid;
-import com.builtbroken.visualization.data.GridPoint;
+import com.builtbroken.visualization.logic.Pathfinders;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -22,6 +18,10 @@ public class DisplayFrame extends JFrame
     int layerIndex = 0;
 
     RenderPanel renderPanel;
+
+    Button playButton;
+
+
     JLabel renderIndexLabel;
     JTextField playSpeedField;
 
@@ -81,8 +81,26 @@ public class DisplayFrame extends JFrame
 
         //--------------------------------------------------------
 
-        final Button playButton = new Button("Play");
-        playButton.addActionListener(e -> play(playButton));
+        button = new Button("Breadth First");
+        button.addActionListener(e -> generateBreadthFirst());
+        panel.add(button);
+
+        button = new Button("----");
+        //button.addActionListener(e -> generateDepthFirst());
+        panel.add(button);
+
+
+        //--------------------------------------------------------
+
+
+        //Spacer
+        panel.add(new JPanel());
+        panel.add(new JPanel());
+
+        //--------------------------------------------------------
+
+        playButton = new Button("Play");
+        playButton.addActionListener(e -> play(false));
         panel.add(playButton);
 
         panel.add(playSpeedField = new JTextField());
@@ -127,16 +145,13 @@ public class DisplayFrame extends JFrame
         }
     }
 
-    protected void play(Button button)
+    protected void play(boolean forceStop)
     {
-        if (currentlyPlaying || button == null)
+        if (currentlyPlaying || forceStop)
         {
             currentlyPlaying = false;
             timer.stop();
-            if (button != null)
-            {
-                button.setLabel("Play");
-            }
+            playButton.setLabel("Play");
         }
         else
         {
@@ -150,7 +165,7 @@ public class DisplayFrame extends JFrame
             timer.start();
 
             //Change text to note the button can stop play
-            button.setLabel("Stop");
+            playButton.setLabel("Stop");
         }
     }
 
@@ -170,14 +185,14 @@ public class DisplayFrame extends JFrame
 
         //Clear old data
         renderLayers.clear();
-        play(null);
+        play(true);
         layerIndex = 0;
 
         final int size = 101;
 
         //Generate data
         Grid grid = new Grid(size);
-        doBreadthPathfinder(grid, 51, 51);
+        Pathfinders.doBreadthPathfinder(grid,  renderLayers,51, 51);
 
         //Update render panel
         updateRenderPanel();
@@ -192,154 +207,19 @@ public class DisplayFrame extends JFrame
 
         //Clear old data
         renderLayers.clear();
-        play(null);
+        play(true);
         layerIndex = 0;
 
         final int size = 101;
 
         //Generate data
         Grid grid = new Grid(size);
-        doDepthPathfinder(grid, 51, 51);
+        Pathfinders.doDepthPathfinder(grid,  renderLayers,51, 51);
 
         //Update render panel
         updateRenderPanel();
 
         System.out.println("Done generating...");
         renderPanel.repaint();
-    }
-
-    protected void doDepthPathfinder(Grid grid, int startX, int startY)
-    {
-        final Stack<GridPoint> stack = new Stack();
-
-        final GridPoint center = GridPoint.get(startX, startY);
-        stack.add(center);
-
-        final ArrayList<GridPoint> tempList = new ArrayList(4);
-
-        while (!stack.isEmpty())
-        {
-            //Get next
-            final GridPoint node = stack.pop();
-
-            //Mark as current node
-            grid.setData(node.x, node.y, 3);
-
-            //Path to next tiles
-            for (EnumDirections dir : EnumDirections.values())
-            {
-                final int x = node.x + dir.xDelta;
-                final int y = node.y + dir.yDelta;
-
-                //Ensure is inside view
-                if (grid.isValid(x, y))
-                {
-                    final GridPoint nextPos = GridPoint.get(x, y);
-
-                    //If have not pathed, add to path list
-                    if (grid.getData(x, y) == 0)
-                    {
-                        //Mark as next node
-                        grid.setData(x, y, 5);
-
-                        //Add to queue
-                        stack.push(nextPos);
-
-                        tempList.add(nextPos);
-                    }
-                    else
-                    {
-                        nextPos.dispose();
-                    }
-                }
-            }
-
-            //Take picture
-            recordLayer(grid);
-
-            //Reset nodes to blue
-            tempList.forEach(pos -> grid.setData(pos.x, pos.y, 2));
-            tempList.clear();
-
-            //Mark as completed
-            if (node == center)
-            {
-                grid.setData(node.x, node.y, 1);
-            }
-            else
-            {
-                grid.setData(node.x, node.y, 4);
-            }
-        }
-    }
-
-    protected void doBreadthPathfinder(Grid grid, int startX, int startY)
-    {
-        final Queue<GridPoint> queue = new LinkedList();
-
-        final GridPoint center = GridPoint.get(startX, startY);
-        queue.add(center);
-
-        final ArrayList<GridPoint> tempList = new ArrayList(4);
-
-        while (!queue.isEmpty())
-        {
-            //Get next
-            final GridPoint node = queue.poll();
-
-            //Mark as current node
-            grid.setData(node.x, node.y, 3);
-
-            //Path to next tiles
-            for (EnumDirections dir : EnumDirections.values())
-            {
-                final int x = node.x + dir.xDelta;
-                final int y = node.y + dir.yDelta;
-
-                //Ensure is inside view
-                if (grid.isValid(x, y))
-                {
-                    final GridPoint nextPos = GridPoint.get(x, y);
-
-                    //If have not pathed, add to path list
-                    if (grid.getData(x, y) == 0)
-                    {
-                        //Mark as next node
-                        grid.setData(x, y, 5);
-
-                        //Add to queue
-                        queue.offer(nextPos);
-
-                        tempList.add(nextPos);
-                    }
-                    else
-                    {
-                        nextPos.dispose();
-                    }
-                }
-            }
-
-            //Take picture
-            recordLayer(grid);
-
-            //Reset nodes to blue
-            tempList.forEach(pos -> grid.setData(pos.x, pos.y, 2));
-            tempList.clear();
-
-            //Mark as completed
-            if (node == center)
-            {
-                grid.setData(node.x, node.y, 1);
-            }
-            else
-            {
-                grid.setData(node.x, node.y, 4);
-            }
-        }
-    }
-
-    protected void recordLayer(Grid currentLayer)
-    {
-        renderLayers.add(currentLayer.copyLayer());
     }
 }
