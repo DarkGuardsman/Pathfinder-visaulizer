@@ -1,4 +1,4 @@
-package com.builtbroken.visualization;
+package com.builtbroken.visualization.ui;
 
 import com.builtbroken.visualization.component.RenderPanel;
 import com.builtbroken.visualization.data.EnumDirections;
