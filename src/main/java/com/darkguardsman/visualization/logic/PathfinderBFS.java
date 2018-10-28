@@ -1,23 +1,24 @@
-package com.builtbroken.visualization.logic;
+package com.darkguardsman.visualization.logic;
 
-import com.builtbroken.visualization.data.EnumDirections;
-import com.builtbroken.visualization.data.Grid;
-import com.builtbroken.visualization.data.GridPoint;
+import com.darkguardsman.visualization.data.EnumDirections;
+import com.darkguardsman.visualization.data.Grid;
+import com.darkguardsman.visualization.data.GridPoint;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Stack;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 10/27/2018.
  */
-public class PathfinderDFS extends Pathfinder
+public class PathfinderBFS extends Pathfinder
 {
     @Override
     public void pathWithNoTarget(Grid grid, ArrayList<Grid> images, int startX, int startY)
     {
-        final Stack<GridPoint> queue = new Stack();
+        final Queue<GridPoint> queue = new LinkedList();
 
         final GridPoint center = GridPoint.get(startX, startY);
         queue.add(center);
@@ -28,19 +29,19 @@ public class PathfinderDFS extends Pathfinder
     @Override
     public void pathWithNoTarget(Grid grid, Collection<GridPoint> startNodes, ArrayList<Grid> images, int startX, int startY)
     {
-        final Stack<GridPoint> stack = new Stack();
+        final Queue<GridPoint> queue = new LinkedList();
 
         final GridPoint center = GridPoint.get(startX, startY);
 
         startNodes.forEach(n -> {
-            stack.push(n);
+            queue.offer(n);
             grid.setData(n.x, n.y, Pathfinders.READY_NODE_ID);
         });
 
-        doPath(center, grid, images, stack);
+        doPath(center, grid, images, queue);
     }
 
-    protected void doPath(GridPoint center, Grid grid, ArrayList<Grid> images, Stack<GridPoint> stack)
+    protected void doPath(GridPoint center, Grid grid, ArrayList<Grid> images, Queue<GridPoint> queue)
     {
         final ArrayList<GridPoint> tempList = new ArrayList(4);
 
@@ -49,10 +50,10 @@ public class PathfinderDFS extends Pathfinder
             images.add(grid.copyLayer());
         }
 
-        while (!stack.isEmpty())
+        while (!queue.isEmpty())
         {
             //Get next
-            final GridPoint node = stack.pop();
+            final GridPoint node = queue.poll();
 
             //Mark as current node
             grid.setData(node.x, node.y, Pathfinders.CURRENT_NODE_ID);
@@ -75,7 +76,7 @@ public class PathfinderDFS extends Pathfinder
                         grid.setData(x, y, Pathfinders.ADDED_NODE_ID);
 
                         //Add to queue
-                        stack.push(nextPos);
+                        queue.offer(nextPos);
 
                         tempList.add(nextPos);
                     }

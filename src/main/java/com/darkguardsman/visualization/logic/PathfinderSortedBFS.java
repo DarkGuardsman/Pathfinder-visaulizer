@@ -1,19 +1,16 @@
-package com.builtbroken.visualization.logic;
+package com.darkguardsman.visualization.logic;
 
-import com.builtbroken.visualization.data.EnumDirections;
-import com.builtbroken.visualization.data.Grid;
-import com.builtbroken.visualization.data.GridPoint;
+import com.darkguardsman.visualization.data.EnumDirections;
+import com.darkguardsman.visualization.data.Grid;
+import com.darkguardsman.visualization.data.GridPoint;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 10/27/2018.
  */
-public class PathfinderBFS extends Pathfinder
+public class PathfinderSortedBFS extends Pathfinder
 {
     @Override
     public void pathWithNoTarget(Grid grid, ArrayList<Grid> images, int startX, int startY)
@@ -44,14 +41,22 @@ public class PathfinderBFS extends Pathfinder
     protected void doPath(GridPoint center, Grid grid, ArrayList<Grid> images, Queue<GridPoint> queue)
     {
         final ArrayList<GridPoint> tempList = new ArrayList(4);
+        final ArrayList<GridPoint> nextSet = new ArrayList();
 
         if(images != null)
         {
             images.add(grid.copyLayer());
         }
 
-        while (!queue.isEmpty())
+        while (!queue.isEmpty() || !nextSet.isEmpty())
         {
+            if(queue.isEmpty())
+            {
+                Collections.sort(nextSet, Comparator.comparingDouble(n -> n.distanceSQ(center)));
+                queue.addAll(nextSet);
+                nextSet.clear();
+            }
+
             //Get next
             final GridPoint node = queue.poll();
 
@@ -76,7 +81,7 @@ public class PathfinderBFS extends Pathfinder
                         grid.setData(x, y, Pathfinders.ADDED_NODE_ID);
 
                         //Add to queue
-                        queue.offer(nextPos);
+                        nextSet.add(nextPos);
 
                         tempList.add(nextPos);
                     }

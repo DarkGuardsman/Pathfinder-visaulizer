@@ -1,8 +1,8 @@
-package com.builtbroken.visualization.logic;
+package com.darkguardsman.visualization.logic;
 
-import com.builtbroken.visualization.data.EnumDirections;
-import com.builtbroken.visualization.data.Grid;
-import com.builtbroken.visualization.data.GridPoint;
+import com.darkguardsman.visualization.data.EnumDirections;
+import com.darkguardsman.visualization.data.Grid;
+import com.darkguardsman.visualization.data.GridPoint;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

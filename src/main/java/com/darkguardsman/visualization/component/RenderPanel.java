@@ -1,7 +1,7 @@
-package com.builtbroken.visualization.component;
+package com.darkguardsman.visualization.component;
 
-import com.builtbroken.visualization.data.Grid;
-import com.builtbroken.visualization.logic.Pathfinders;
+import com.darkguardsman.visualization.data.Grid;
+import com.darkguardsman.visualization.logic.Pathfinders;
 
 import javax.swing.*;
 import java.awt.*;

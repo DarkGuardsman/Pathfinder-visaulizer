@@ -1,10 +1,10 @@
-package com.builtbroken.visualization.ui;
+package com.darkguardsman.visualization.ui;
 
-import com.builtbroken.visualization.component.RenderPanel;
-import com.builtbroken.visualization.data.EnumDirections;
-import com.builtbroken.visualization.data.Grid;
-import com.builtbroken.visualization.data.PathFunction;
-import com.builtbroken.visualization.logic.Pathfinders;
+import com.darkguardsman.visualization.component.RenderPanel;
+import com.darkguardsman.visualization.data.EnumDirections;
+import com.darkguardsman.visualization.data.Grid;
+import com.darkguardsman.visualization.data.PathFunction;
+import com.darkguardsman.visualization.logic.Pathfinders;
 
 import javax.swing.*;
 import java.awt.*;

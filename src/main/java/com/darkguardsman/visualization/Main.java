@@ -1,6 +1,6 @@
-package com.builtbroken.visualization;
+package com.darkguardsman.visualization;
 
-import com.builtbroken.visualization.ui.DisplayFrame;
+import com.darkguardsman.visualization.ui.DisplayFrame;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.

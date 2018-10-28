@@ -1,4 +1,4 @@
-package com.builtbroken.visualization.component;
+package com.darkguardsman.visualization.component;
 
 import java.awt.*;
 import java.awt.event.ComponentEvent;

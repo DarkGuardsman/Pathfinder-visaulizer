@@ -1,4 +1,4 @@
-package com.builtbroken.visualization.data;
+package com.darkguardsman.visualization.data;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
