@@ -39,7 +39,7 @@ public class DisplayFrame extends JFrame
         setSize(1000, 800);
         setMinimumSize(new Dimension(800, 800));
         setLocation(200, 200);
-        setTitle("Visualization - heat pathfinder");
+        setTitle("Visualization - path search algs");
 
         add(buildCenter());
 
