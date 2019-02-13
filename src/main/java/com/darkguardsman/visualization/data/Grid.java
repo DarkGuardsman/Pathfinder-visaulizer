@@ -6,13 +6,13 @@ package com.darkguardsman.visualization.data;
  */
 public class Grid
 {
-    public final int[] dataArray;
+    public final int[][] dataArray;
     public final int size;
 
     public Grid(int size)
     {
         this.size = size;
-        this.dataArray = new int[size * size];
+        this.dataArray = new int[size][];
     }
 
     public int getData(int x, int y)
@@ -21,7 +21,7 @@ public class Grid
         {
             throw new RuntimeException("Error: position is outside array P(" + x + ", " + y + ")");
         }
-        return dataArray[getIndex(x, y)];
+        return dataArray[x][y];
     }
 
     public void setData(GridPoint point, int dataPoint)
@@ -35,7 +35,7 @@ public class Grid
         {
             throw new RuntimeException("Error: position is outside array P(" + x + ", " + y + ")");
         }
-        dataArray[getIndex(x, y)] = dataPoint;
+        dataArray[x][y] = dataPoint;
     }
 
     public int getIndex(int x, int y)
