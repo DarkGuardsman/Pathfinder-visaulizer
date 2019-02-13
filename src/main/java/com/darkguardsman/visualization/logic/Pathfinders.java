@@ -1,5 +1,6 @@
 package com.darkguardsman.visualization.logic;
 
+import com.darkguardsman.visualization.data.DistanceFunction;
 import com.darkguardsman.visualization.data.EnumDirections;
 import com.darkguardsman.visualization.data.Grid;
 import com.darkguardsman.visualization.data.GridPoint;
@@ -14,6 +15,7 @@ import java.util.Queue;
  */
 public class Pathfinders
 {
+
     public static final int EMPTY_NODE_ID = 0;
     public static final int CENTER_NODE_ID = 1;
     public static final int READY_NODE_ID = 2;
@@ -26,7 +28,7 @@ public class Pathfinders
     public static final Pathfinder breadthFirst = new PathfinderBFS();
     public static final Pathfinder depthFirst = new PathfinderDFS();
     public static final Pathfinder breadthFirstSorted = new PathfinderSortedBFS();
-    public static final Pathfinder boxShell = new PathfinderShell((xx, yy, center, range)->
+    public static final Pathfinder boxShell = new PathfinderShell((xx, yy, center, range) ->
     {
         int x = xx - center.x;
         int y = yy - center.y;
@@ -41,13 +43,15 @@ public class Pathfinders
         return true;
     });
 
-    public static final Pathfinder circleShell = new PathfinderShell((xx, yy, center, range)->
+    public static final DistanceFunction distanceFunctionCircle = (xx, yy, center, range) ->
     {
         int x = xx - center.x;
         int y = yy - center.y;
         double distance = x * x + y * y;
         return Math.floor(distance) < range * range;
-    });
+    };
+
+    public static final Pathfinder circleShell = new PathfinderShell(distanceFunctionCircle);
 
     public static void doBreadthPathfinder(Grid grid, ArrayList<Grid> images, int startX, int startY)
     {

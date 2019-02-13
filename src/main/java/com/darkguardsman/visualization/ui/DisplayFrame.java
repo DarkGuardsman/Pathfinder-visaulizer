@@ -4,6 +4,7 @@ import com.darkguardsman.visualization.component.RenderPanel;
 import com.darkguardsman.visualization.data.EnumDirections;
 import com.darkguardsman.visualization.data.Grid;
 import com.darkguardsman.visualization.data.PathFunction;
+import com.darkguardsman.visualization.instance.DataShell;
 import com.darkguardsman.visualization.logic.Pathfinders;
 
 import javax.swing.*;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
  */
 public class DisplayFrame extends JFrame
 {
+
     ArrayList<Grid> renderLayers = new ArrayList();
     int layerIndex = 0;
 
@@ -122,6 +124,17 @@ public class DisplayFrame extends JFrame
         button = new Button("Shell Circle");
         button.addActionListener(e -> generateData((grid, images, x, y) -> Pathfinders.doCircleShellPathfinder(grid, images, x, y)));
         panel.add(button);
+
+        //--------------------------------------------------------
+
+        button = new Button("Data Shell");
+        button.addActionListener(e -> generateData((grid, images, x, y) ->
+        {
+            new DataShell(Pathfinders.distanceFunctionCircle).init(x, y, grid.size - 5, images).expandAll(grid);
+        }));
+        panel.add(button);
+
+        panel.add(new JPanel());
 
         //--------------------------------------------------------
 
@@ -242,7 +255,7 @@ public class DisplayFrame extends JFrame
         final int centerX = 51;
         final int centerY = 51;
 
-        if(enableRandomWallCheckBox.isSelected())
+        if (enableRandomWallCheckBox.isSelected())
         {
 
             for (int i = 0; i < 100; i++)

@@ -6,13 +6,14 @@ package com.darkguardsman.visualization.data;
  */
 public class Grid
 {
+
     public final int[][] dataArray;
     public final int size;
 
     public Grid(int size)
     {
         this.size = size;
-        this.dataArray = new int[size][];
+        this.dataArray = new int[size][size];
     }
 
     public int getData(int x, int y)
@@ -51,10 +52,13 @@ public class Grid
 
     public Grid copyLayer()
     {
-        Grid layer = new Grid(size);
-        for (int i = 0; i < dataArray.length; i++)
+        final Grid layer = new Grid(size);
+        for (int x = 0; x < dataArray.length; x++)
         {
-            layer.dataArray[i] = this.dataArray[i];
+            for (int y = 0; y < dataArray[x].length; y++)
+            {
+                layer.dataArray[x][y] = this.dataArray[x][y];
+            }
         }
         return layer;
     }

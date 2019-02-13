@@ -147,6 +147,11 @@ public class PathfinderShell extends Pathfinder
         }
     }
 
+    public void doStep()
+    {
+
+    }
+
     protected boolean isInRange(int xx, int yy, GridPoint center, int range)
     {
         return distanceFunction.isInRange(xx, yy, center, range);
