@@ -1,2 +1,10 @@
 
 *.iml
+
+\.DS_Store
+
+*.ipr
+
+*.iws
+
+out/
