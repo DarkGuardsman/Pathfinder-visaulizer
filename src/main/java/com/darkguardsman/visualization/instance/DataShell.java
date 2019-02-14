@@ -92,15 +92,11 @@ public class DataShell
         currentSet.clear();
         currentSet.addAll(queue);
 
-        System.out.println("Expanding[" + currentShell + "]-" + currentSet.size() + "-" + lastSet.size());
-
         //Process current queue
         while (!queue.isEmpty())
         {
             //Get next
             final GridPoint node = queue.poll();
-
-            System.out.println("Pathing: " + node);
 
             //Path to next tiles
             for (EnumDirections direction : EnumDirections.values())
@@ -121,6 +117,7 @@ public class DataShell
                             //Add to queue
                             queue.offer(nextPos);
                             currentSet.add(nextPos);
+                            grid.setData(x, y, grid.getData(node.x, node.y));
                         }
                         else
                         {
@@ -151,7 +148,7 @@ public class DataShell
         Color color;
         do
         {
-            color = new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
+            color = new Color(rand.nextFloat() / 2f + 0.5f, rand.nextFloat() / 2f + 0.5f, rand.nextFloat() / 2f + 0.5f);
         } while (color.getRGB() == 0);
         return color;
     }

@@ -100,7 +100,7 @@ public class RenderPanel extends JPanel
                         }
                         else
                         {
-                            g2.setPaint(Color.BLACK);
+                            g2.setPaint(new Color(data)); //TODO check if is valid
                         }
                         g2.fillRect(drawX, drawY, sizeX, sizeY);
                     }
