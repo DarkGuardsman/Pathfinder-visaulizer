@@ -28,7 +28,8 @@ public class Pathfinders
     public static final Pathfinder breadthFirst = new PathfinderBFS();
     public static final Pathfinder depthFirst = new PathfinderDFS();
     public static final Pathfinder breadthFirstSorted = new PathfinderSortedBFS();
-    public static final Pathfinder boxShell = new PathfinderShell((xx, yy, center, range) ->
+
+    public static final DistanceFunction distanceFunctionBox = (xx, yy, center, range) ->
     {
         int x = xx - center.x;
         int y = yy - center.y;
@@ -41,7 +42,7 @@ public class Pathfinders
             return false;
         }
         return true;
-    });
+    };
 
     public static final DistanceFunction distanceFunctionCircle = (xx, yy, center, range) ->
     {
@@ -51,6 +52,7 @@ public class Pathfinders
         return Math.floor(distance) < range * range;
     };
 
+    public static final Pathfinder boxShell = new PathfinderShell(distanceFunctionBox);
     public static final Pathfinder circleShell = new PathfinderShell(distanceFunctionCircle);
 
     public static void doBreadthPathfinder(Grid grid, ArrayList<Grid> images, int startX, int startY)

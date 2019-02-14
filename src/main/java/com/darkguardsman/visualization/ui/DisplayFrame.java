@@ -127,14 +127,19 @@ public class DisplayFrame extends JFrame
 
         //--------------------------------------------------------
 
-        button = new Button("Data Shell");
+        button = new Button("DS Box");
+        button.addActionListener(e -> generateData((grid, images, x, y) ->
+        {
+            new DataShell(Pathfinders.distanceFunctionBox).init(x, y, grid.size - 5, images).expandAll(grid);
+        }));
+        panel.add(button);
+
+        button = new Button("DS Circle");
         button.addActionListener(e -> generateData((grid, images, x, y) ->
         {
             new DataShell(Pathfinders.distanceFunctionCircle).init(x, y, grid.size - 5, images).expandAll(grid);
         }));
         panel.add(button);
-
-        panel.add(new JPanel());
 
         //--------------------------------------------------------
 

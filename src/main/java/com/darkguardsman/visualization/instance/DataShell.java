@@ -155,7 +155,7 @@ public class DataShell
 
     public boolean isCompleted()
     {
-        return queue.isEmpty() && nextSet.isEmpty();
+        return queue.isEmpty() && nextSet.isEmpty() && currentShell <= maxShell;
     }
 
     protected boolean isInRange(int xx, int yy, GridPoint center, int range)
