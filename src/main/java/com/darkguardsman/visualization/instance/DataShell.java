@@ -4,13 +4,9 @@ import com.darkguardsman.visualization.data.DistanceFunction;
 import com.darkguardsman.visualization.data.EnumDirections;
 import com.darkguardsman.visualization.data.Grid;
 import com.darkguardsman.visualization.data.GridPoint;
-import com.darkguardsman.visualization.logic.Pathfinder;
-import com.darkguardsman.visualization.logic.Pathfinders;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.awt.Color;
+import java.util.*;
 
 /**
  * Version of {@link com.darkguardsman.visualization.logic.PathfinderShell} that is used
@@ -21,6 +17,8 @@ import java.util.Queue;
  */
 public class DataShell
 {
+
+    private static final Random rand = new Random();
 
     public GridPoint center;
     public int currentShell;
@@ -33,6 +31,8 @@ public class DataShell
     private Queue<GridPoint> queue;
     private ArrayList<GridPoint> tempList = new ArrayList(4);
     private ArrayList<GridPoint> nextSet = new ArrayList();
+    private Set<GridPoint> currentSet = new HashSet();
+    private Set<GridPoint> lastSet = new HashSet();
 
     public DataShell(DistanceFunction distanceFunction)
     {
@@ -86,14 +86,21 @@ public class DataShell
             images.add(grid.copyLayer());
         }
 
+        //Set path caches
+        lastSet.clear();
+        lastSet.addAll(currentSet);
+        currentSet.clear();
+        currentSet.addAll(queue);
+
+        System.out.println("Expanding[" + currentShell + "]-" + currentSet.size() + "-" + lastSet.size());
+
         //Process current queue
         while (!queue.isEmpty())
         {
             //Get next
             final GridPoint node = queue.poll();
 
-            //Mark as current node
-            grid.setData(node.x, node.y, Pathfinders.CURRENT_NODE_ID);
+            System.out.println("Pathing: " + node);
 
             //Path to next tiles
             for (EnumDirections direction : EnumDirections.values())
@@ -102,28 +109,24 @@ public class DataShell
                 final int y = node.y + direction.yDelta;
 
                 //Ensure is inside view
-                if (grid.isValid(x, y))
+                if (grid.isValid(x, y) && grid.getData(x, y) == 0)
                 {
                     final GridPoint nextPos = GridPoint.get(x, y);
 
                     //If have not pathed, add to path list
-                    if (grid.getData(x, y) == Pathfinders.EMPTY_NODE_ID)
+                    if (!currentSet.contains(nextPos) && !lastSet.contains(nextPos))
                     {
-                        //Mark as next node
-                        grid.setData(x, y, Pathfinders.ADDED_NODE_ID);
-
                         if (isInRange(x, y, center, currentShell))
                         {
                             //Add to queue
                             queue.offer(nextPos);
+                            currentSet.add(nextPos);
                         }
                         else
                         {
                             //Add to queue
                             nextSet.add(nextPos);
                         }
-
-                        tempList.add(nextPos);
                     }
                     else
                     {
@@ -131,45 +134,26 @@ public class DataShell
                     }
                 }
             }
-
-            //Take picture
-            if (images != null)
-            {
-                images.add(grid.copyLayer());
-            }
-
-            //Reset nodes to blue
-            tempList.forEach(pos ->
-            {
-                if (isInRange(pos.x, pos.y, center, currentShell))
-                {
-                    grid.setData(pos.x, pos.y, Pathfinders.READY_NODE_ID);
-                }
-                else
-                {
-                    grid.setData(pos.x, pos.y, Pathfinders.WAITING_NODE_ID);
-                }
-            });
-            tempList.clear();
-
-            //Mark as completed
-            if (node == center)
-            {
-                grid.setData(node.x, node.y, Pathfinders.CENTER_NODE_ID);
-            }
-            else
-            {
-                grid.setData(node.x, node.y, Pathfinders.COMPLETED_NODE_ID);
-            }
         }
 
         //Move everything from next set into queue
+        final Color color = getRandomColor();
         nextSet.forEach(pos ->
         {
-            grid.setData(pos.x, pos.y, Pathfinders.READY_NODE_ID);
+            grid.setData(pos.x, pos.y, color.getRGB());
             queue.offer(pos);
         });
         nextSet.clear();
+    }
+
+    private Color getRandomColor()
+    {
+        Color color;
+        do
+        {
+            color = new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
+        } while (color.getRGB() == 0);
+        return color;
     }
 
     public boolean isCompleted()
